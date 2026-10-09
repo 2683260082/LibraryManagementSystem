@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>必读 · 从这里开始 —— 图书管理系统</title>
+<style>
+/* 与系统本身的配色保持一致, 让人一眼知道这是同一个项目 */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --bg: #f1f5f9;
+  --panel: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --ok: #16a34a;
+  --danger: #dc2626;
+  --warn: #d97706;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 20px 60px;
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--ink); line-height: 1.7;
+}
+.wrap { max-width: 940px; margin: 0 auto; }
+
+/* 页头 */
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; border-radius: 0 0 18px 18px;
+  padding: 34px 30px; margin: 0 -20px 28px;
+  text-align: center;
+}
+.hero h1 { margin: 0 0 8px; font-size: 26px; }
+.hero p { margin: 0; opacity: .9; font-size: 15px; }
+.hero .badge {
+  display: inline-block; margin-top: 14px; padding: 4px 14px;
+  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+  border-radius: 999px; font-size: 13px;
+}
+
+/* 通用区块 */
+section {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 14px; padding: 24px 26px; margin-bottom: 20px;
+}
+h2 {
+  font-size: 19px; margin: 0 0 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+h2 .num {
+  background: var(--primary); color: #fff;
+  width: 26px; height: 26px; border-radius: 7px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; flex: 0 0 auto;
+}
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+h3 { font-size: 15px; margin: 22px 0 10px; color: var(--ink); }
+
+/* 高亮提示条 */
+.tip {
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px; padding: 12px 16px; font-size: 14px; margin: 14px 0;
+}
+.warn {
+  background: #fffbeb; border: 1px solid #fde68a;
+  border-left: 4px solid var(--warn);
+  border-radius: 8px; padding: 12px 16px; font-size: 14px; margin: 14px 0;
+}
+.tip b, .warn b { color: var(--ink); }
+
+/* 启动步骤 */
+.steps { counter-reset: step; display: grid; gap: 14px; }
+.step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 10px; padding: 16px 18px;
+}
+.step::before {
+  counter-increment: step; content: counter(step);
+  background: var(--primary); color: #fff;
+  width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+}
+.step .body { flex: 1; }
+.step .body b { display: block; margin-bottom: 4px; font-size: 15px; }
+.step .body span { color: var(--muted); font-size: 14px; }
+
+/* 按钮样式(模拟实际文件) */
+.file-btn {
+  display: inline-block; background: var(--primary); color: #fff;
+  padding: 5px 14px; border-radius: 7px; font-weight: 600; font-size: 14px;
+}
+code, .kbd {
+  background: #f1f5f9; border: 1px solid var(--line); border-radius: 5px;
+  padding: 1px 7px; font-family: Consolas, "Courier New", monospace;
+  font-size: 13px; color: #be123c; white-space: nowrap;
+}
+.url {
+  background: #eff6ff; border: 1px dashed var(--primary);
+  border-radius: 7px; padding: 4px 12px; font-size: 15px;
+  color: var(--primary-dark); font-family: Consolas, monospace;
+}
+
+/* 表格 */
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.path { font-family: Consolas, monospace; font-size: 13px; color: var(--primary-dark); white-space: nowrap; }
+.tag { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
+.tag-run  { background: #dcfce7; color: #166534; }
+.tag-code { background: #dbeafe; color: #1e40af; }
+.tag-doc  { background: #fef3c7; color: #92400e; }
+.tag-meta { background: #f1f5f9; color: #64748b; }
+
+/* 账号卡片 */
+.accounts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 6px; }
+.account {
+  border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+  background: var(--bg);
+}
+.account .role { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.account .cred { font-family: Consolas, monospace; font-size: 15px; font-weight: 700; color: var(--primary-dark); }
+.account .desc { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+/* 目录树 */
+.tree {
+  background: #0f172a; color: #e2e8f0; border-radius: 10px;
+  padding: 18px 20px; font-family: Consolas, "Microsoft YaHei", monospace;
+  font-size: 13.5px; line-height: 1.9; overflow-x: auto; white-space: pre;
+}
+.tree .c-run  { color: #4ade80; }
+.tree .c-code { color: #60a5fa; }
+.tree .c-doc  { color: #fbbf24; }
+.tree .c-dim  { color: #64748b; }
+
+/* 文档链接列表 */
+.doclist { list-style: none; padding: 0; margin: 10px 0 0; }
+.doclist li {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: 8px; margin-bottom: 8px;
+}
+.doclist .name { font-weight: 600; font-size: 14px; }
+.doclist .about { color: var(--muted); font-size: 13px; }
+
+/* FAQ */
+details {
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px 16px; margin-bottom: 8px; background: var(--bg);
+}
+details summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+details summary:hover { color: var(--primary); }
+details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
+
+.footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 30px; }
+
+@media (max-width: 640px) {
+  .hero { padding: 26px 18px; }
+  .hero h1 { font-size: 21px; }
+  section { padding: 20px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📚 图书管理系统（课程设计）</h1>
+  <p>Flask + SQLite · 可独立运行的完整系统 · 本页是项目的使用说明入口</p>
+  <span class="badge">双击本文件打开即可阅读，无需任何软件</span>
+</div>
+
+<div class="wrap">
+
+  <!-- ================= 1. 这是什么 ================= -->
+  <section>
+    <h2><span class="num">1</span>这是一个什么项目</h2>
+    <p class="sub">先用 30 秒搞清楚手上拿的是什么东西。</p>
+    <p style="margin-top:0;font-size:15px">
+      一个<b>功能完整、可以真正跑起来</b>的图书馆借阅管理系统。不是只有几个静态页面的壳子，
+      而是包含<b>账号体系、权限控制、图书增删改查、借还业务、逾期计费、分页检索、单元测试</b>的完整工程。
+    </p>
+    <div class="tip">
+      <b>一句话概括：</b>用 Python 的 Flask 框架 + SQLite 数据库实现，<b>不需要额外安装数据库软件</b>，
+      装一个 Python 就能跑。所有数据保存在 <code>03-项目源码\library.db</code> 文件中。
+    </div>
+    <table>
+      <tr><th>类别</th><th>包含内容</th></tr>
+      <tr>
+        <td><b>读者功能</b></td>
+        <td>注册 / 登录、图书检索（按书名·作者·ISBN 搜索 + 分类筛选）、借书、还书、查看我的借阅、逾期违约金计算</td>
+      </tr>
+      <tr>
+        <td><b>管理员功能</b></td>
+        <td>读者的全部功能 + 图书新增·编辑·删除、读者管理、全馆借阅记录查询（可按状态筛选）、首页统计面板</td>
+      </tr>
+      <tr>
+        <td><b>工程配套</b></td>
+        <td>40 个单元测试、34 项端到端验证、一键启动脚本、完整课程设计文档</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- ================= 2. 怎么跑起来 ================= -->
+  <section>
+    <h2><span class="num">2</span>怎么跑起来（照着做就行）</h2>
+    <p class="sub">全程大约 2 分钟，只需要操作两下。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="body">
+          <b>安装 Python（已经装过就跳过这步）</b>
+          <span>到 <span class="url">python.org/downloads</span> 下载，安装时<b>务必勾选 <span class="kbd">Add Python to PATH</span></b>，否则启动会报"不是内部或外部命令"。</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="body">
+          <b>双击 <span class="file-btn">01-【双击开始】.bat</span></b>
+          <span>脚本会自动进入源码目录、自动检查环境、自动安装依赖 Flask，然后启动服务。<b>这个黑窗口不要关</b>，关了服务就停了。</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="body">
+          <b>浏览器自动打开系统首页</b>
+          <span>如果没有自动打开，手动在浏览器地址栏输入：<span class="url">http://127.0.0.1:5000</span></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="body">
+          <b>用下面的账号登录</b>
+          <span>登录页上也直接印着这两个账号，忘了也没关系。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="accounts">
+      <div class="account">
+        <div class="role">👑 管理员账号</div>
+        <div class="cred">admin / admin123</div>
+        <div class="desc">可管理图书和读者、查看全馆统计</div>
+      </div>
+      <div class="account">
+        <div class="role">📖 读者账号</div>
+        <div class="cred">reader / reader123</div>
+        <div class="desc">可检索图书、借书还书、查看个人借阅</div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <b>想从头开始 / 数据乱了怎么办？</b>
+      直接删掉 <code>03-项目源码\library.db</code> 文件，再重新启动，系统会自动重建一套全新的演示数据。
+    </div>
+  </section>
+
+  <!-- ================= 3. 目录里每个文件是干嘛的 ================= -->
+  <section>
+    <h2><span class="num">3</span>文件夹里每个东西是干嘛的</h2>
+    <p class="sub">颜色说明：<span class="tag tag-run">启动相关</span> <span class="tag tag-code">程序代码</span> <span class="tag tag-doc">说明文档</span> <span class="tag tag-meta">配置/自动生成</span></p>
+
+    <div class="tree"><span class="c-doc">00-【必读】从这里开始.html      ← 第 1 步: 你现在看的这个说明页</span>
+<span class="c-run">01-【双击开始】.bat             ← 第 2 步: 双击它就能启动系统</span>
+<span class="c-doc">02-课程设计文档\                ← 第 3 步: 需求分析/设计/数据库/测试等 6 份正式文档</span>
+<span class="c-code">03-项目源码\                    ← 第 4 步: 全部代码都在这里</span>
+<span class="c-code">    ├─ app.py                  ← ★核心: 全部后端代码(路由+数据库+业务逻辑), 带中文注释</span>
+<span class="c-code">    ├─ templates\              ← 页面模板, 决定每个网页长什么样(10 个文件)</span>
+<span class="c-code">    │   ├─ base.html           ← 基础布局: 顶部导航栏、消息提示、页脚</span>
+<span class="c-code">    │   ├─ books.html          ← 图书检索页</span>
+<span class="c-code">    │   ├─ my_borrows.html     ← 我的借阅页</span>
+<span class="c-code">    │   ├─ readers.html        ← 读者管理页(管理员)</span>
+<span class="c-code">    │   └─ ...                 ← 其余页面见 02-课程设计文档\06-使用说明书.md</span>
+<span class="c-code">    ├─ static\style.css        ← 全部样式(颜色、按钮、表格长什么样)</span>
+<span class="c-code">    ├─ unit_test\              ← 单元测试, 共 40 个用例, 验证每个功能是否正确</span>
+<span class="c-code">    ├─ smoke_test.py           ← 端到端测试, 模拟真实用户走一遍完整流程(34 项断言)</span>
+<span class="c-code">    ├─ requirements.txt        ← 依赖清单, 标明项目需要哪些第三方库</span>
+<span class="c-meta">    └─ library.db              ← 数据库文件, 存所有图书和账号数据(删掉可自动重建)</span></div>
+
+    <div class="tip">
+      <b>答辩时被问"代码在哪"？</b>
+      全部后端逻辑集中在 <code>03-项目源码\app.py</code>（575 行，带详细中文注释），
+      页面在 <code>templates\</code>，样式在 <code>static\style.css</code>。
+      测试代码单独放在 <code>03-项目源码\unit_test\</code>，不与主程序混在一起。
+    </div>
+  </section>
+
+  <!-- ================= 4. 文档怎么打开 ================= -->
+  <section>
+    <h2><span class="num">4</span>课程设计文档在哪里、怎么打开</h2>
+    <p class="sub">文档在 <code>02-课程设计文档\</code> 文件夹里，共 6 份。</p>
+
+    <div class="warn">
+      <b>关于文件格式：</b>这些文档是 <b>Markdown 格式（.md 后缀）</b>。
+      双击用记事本打开也能看（内容完全能读，只是会有 <code>#</code>、<code>|</code> 这些符号）。
+      想看得漂亮，推荐装 <b>VS Code</b> 打开，或者直接拖到 <b>GitHub</b> 网页上看。
+      <b>写报告需要复制内容时，用记事本打开反而最方便。</b>
+    </div>
+
+    <ul class="doclist">
+      <li><span class="name">01-需求分析</span><span class="about">要做什么功能、有哪几种用户、每个用例怎么走</span></li>
+      <li><span class="name">02-系统设计</span><span class="about">整体架构、模块划分、关键业务流程（借还流程、权限设计）</span></li>
+      <li><span class="name">03-数据库设计</span><span class="about">3 张表的结构、字段含义、外键与索引、E-R 关系</span></li>
+      <li><span class="name">04-接口设计</span><span class="about">全部 15 个路由清单：路径、方法、权限、入参出参</span></li>
+      <li><span class="name">05-测试报告</span><span class="about">测试范围、74 项测试用例及结果、如何复现</span></li>
+      <li><span class="name">06-使用说明书</span><span class="about">面向使用者：安装步骤、每个功能怎么操作</span></li>
+    </ul>
+
+    <div class="tip">
+      <b>写报告怎么用这些文档？</b>
+      报告通常包含：需求分析 → 系统设计 → 数据库设计 → 实现与测试。
+      上面 6 份文档<b>正好一一对应</b>，可以直接取用或改写成本校的模板格式。
+    </div>
+  </section>
+
+  <!-- ================= 5. 常见问题 ================= -->
+  <section>
+    <h2><span class="num">5</span>常见问题</h2>
+    <p class="sub">点一下展开答案。</p>
+
+    <details open>
+      <summary>双击【双击开始】.bat 闪退 / 提示"不是内部或外部命令"</summary>
+      <div class="answer">
+        说明 Python 没装，或者安装时<b>没有勾选 <span class="kbd">Add Python to PATH</span></b>。<br>
+        解决：重新运行 Python 安装程序 → 选择 <b>Modify</b> → 勾选 <b>Add Python to PATH</b> → 完成。<br>
+        验证：在命令行输入 <code>python --version</code> 能显示版本号就说明好了。
+      </div>
+    </details>
+
+    <details>
+      <summary>提示"ModuleNotFoundError: No module named 'flask'"</summary>
+      <div class="answer">
+        缺少 Flask 依赖。运行一次 <code>pip install -r requirements.txt</code> 即可。<br>
+        如果下载慢，用国内镜像：<code>pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</code>
+      </div>
+    </details>
+
+    <details>
+      <summary>提示"Address already in use"或端口被占用</summary>
+      <div class="answer">
+        说明 5000 端口已有服务在跑（可能你之前启动过一个没关）。<br>
+        方法一：关掉已有的黑窗口；方法二：改端口——打开 <code>03-项目源码\app.py</code>，
+        把最后一行的 <code>port=5000</code> 改成 <code>port=5001</code>，再重新启动。
+      </div>
+    </details>
+
+    <details>
+      <summary>打开页面是空白的，或者样式乱了</summary>
+      <div class="answer">
+        浏览器缓存了旧的样式文件。按 <b>Ctrl + F5</b> 强制刷新即可。
+      </div>
+    </details>
+
+    <details>
+      <summary>忘记管理员密码 / 想把数据恢复成初始状态</summary>
+      <div class="answer">
+        直接删除 <code>03-项目源码\library.db</code> 文件，然后重新启动。
+        系统会自动重建数据库，并写入 8 本演示图书和 2 个演示账号。
+      </div>
+    </details>
+
+    <details>
+      <summary>怎么运行测试？</summary>
+      <div class="answer">
+        在项目目录下打开命令行，先进入源码目录再执行：<br><br>
+        <code>cd 03-项目源码</code><br><br>
+        <code>python -m unittest discover -s unit_test -t .</code> &nbsp;→&nbsp; 40 个单元测试<br>
+        <code>python smoke_test.py</code> &nbsp;→&nbsp; 34 项端到端验证（需先启动服务）<br><br>
+        测试使用独立的临时数据库，<b>不会影响你的业务数据</b>。
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= 6. 答辩要点 ================= -->
+  <section>
+    <h2><span class="num">6</span>答辩可能会问到的点</h2>
+    <p class="sub">提前准备好这几条，被追问也答得上。</p>
+    <table>
+      <tr><th style="width:32%">问题</th><th>要点</th></tr>
+      <tr>
+        <td><b>为什么用 SQLite？</b></td>
+        <td>零配置、单文件即数据库、无需单独安装服务，适合课程设计场景；切换到 MySQL 只需改连接方式，SQL 基本通用。</td>
+      </tr>
+      <tr>
+        <td><b>怎么防止超借（借空）？</b></td>
+        <td>借书用<b>条件更新</b>：<code>UPDATE ... SET available = available - 1 WHERE available &gt; 0</code>，
+            由数据库保证原子性，再用 <code>rowcount</code> 判断是否扣减成功。并发下也只有一人成功。</td>
+      </tr>
+      <tr>
+        <td><b>怎么防止 SQL 注入？</b></td>
+        <td>所有 SQL 一律使用参数占位符 <code>?</code> 传值，用户输入永不拼接进 SQL 字符串。</td>
+      </tr>
+      <tr>
+        <td><b>密码怎么存的？</b></td>
+        <td>用 Werkzeug 的 <code>generate_password_hash</code> 做哈希加盐存储，数据库中不存在明文密码。</td>
+      </tr>
+      <tr>
+        <td><b>权限怎么控制？</b></td>
+        <td><code>login_required</code> 和 <code>admin_required</code> 两个装饰器，
+            结合 session 中的角色判断；读者访问管理页会被拦截并跳转。</td>
+      </tr>
+      <tr>
+        <td><b>删除读者为什么是"软删除"？</b></td>
+        <td>借阅记录是业务凭证，注销只把 <code>status</code> 标记为 <code>deleted</code>，
+            历史记录完整保留、可追溯，避免数据丢失。</td>
+      </tr>
+      <tr>
+        <td><b>逾期怎么判定？</b></td>
+        <td>由 SQL 的 <code>julianday()</code> 函数计算日期差，不在模板里做字符串日期比较，
+            避免日期格式一变判断就出错。</td>
+      </tr>
+    </table>
+  </section>
+
+  <p class="footer">
+    📚 图书管理系统 · 课程设计交付版 · Flask + SQLite<br>
+    有问题先看上面的「常见问题」，仍无法解决时查阅 <code>02-课程设计文档\</code> 中的文档
+  </p>
+
+</div>
+</body>
+</html>
