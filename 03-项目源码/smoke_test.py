@@ -90,6 +90,31 @@ def check(name, cond):
         ok = False
 
 
+def verify_pristine():
+    """自检: 测试跑完后数据必须回到初始状态
+
+    目的: 测试用的演示库一旦残留脏数据, 学生/评审看到的就是被污染的系统,
+    而且往往不会有人主动去查。这里把"数据是否干净"也变成一条自动化断言,
+    让问题当场暴露, 而不是悄悄留在交付物里。
+    """
+    _log("verify", "校验数据库是否回到初始状态")
+    conn = sqlite3.connect(DB_PATH)  # 建立校验用连接
+    users = conn.execute("SELECT COUNT(1) FROM users").fetchone()[0]      # 用户数
+    books = conn.execute("SELECT COUNT(1) FROM books").fetchone()[0]      # 图书数
+    borrows = conn.execute("SELECT COUNT(1) FROM borrows").fetchone()[0]  # 借阅记录数
+    # 孤儿记录: 借阅记录指向了不存在的图书, 属于数据完整性问题
+    orphans = conn.execute(
+        "SELECT COUNT(1) FROM borrows br LEFT JOIN books b ON b.id = br.book_id WHERE b.id IS NULL"
+    ).fetchone()[0]
+    conn.close()  # 关闭连接
+
+    print(f"  状态: users={users} books={books} borrows={borrows} 孤儿借阅={orphans}")
+    # 初始状态由 init_db 决定: 2 个演示账号、8 本演示图书、0 条借阅记录
+    check("数据库回到初始状态 (2 用户 / 8 图书 / 0 借阅)",
+          users == 2 and books == 8 and borrows == 0)
+    check("无孤儿借阅记录", orphans == 0)
+
+
 def main():
     """执行完整冒烟测试流程"""
     print("=" * 60)
@@ -233,7 +258,8 @@ def main():
     _, html = post(new_client(), "/login", {"username": new_user, "password": "abc123456"})
     check("新读者可登录", "欢迎回来" in html)
 
-    cleanup()  # 清理本次测试数据
+    cleanup()       # 清理本次测试数据
+    verify_pristine()  # 自检: 确认数据库已回到初始状态
 
     print("=" * 60)
     print("全部通过" if ok else "存在失败项")
