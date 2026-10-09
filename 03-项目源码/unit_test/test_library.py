@@ -8,9 +8,9 @@
     4. 借阅归还: 库存扣减、逾期计算、并发超借防护
     5. 读者管理: 软删除保留借阅凭证
 
-运行方式:
-    cd library-system-flask
-    python -m pytest unit_test/ -v
+运行方式(在 03-项目源码 目录下执行):
+    cd 03-项目源码
+    python -m unittest discover -s unit_test -t .
 """
 import os  # 操作系统路径与环境变量操作
 import sys  # 系统路径操作, 用于导入被测模块
