@@ -201,7 +201,7 @@ details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
       </tr>
       <tr>
         <td><b>工程配套</b></td>
-        <td>40 个单元测试、34 项端到端验证、一键启动脚本、完整课程设计文档</td>
+        <td>40 个单元测试、36 项端到端验证、一键启动脚本、完整课程设计文档</td>
       </tr>
     </table>
   </section>
@@ -275,7 +275,7 @@ details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
 <span class="c-code">    │   └─ ...                 ← 其余页面见 02-课程设计文档\06-使用说明书.md</span>
 <span class="c-code">    ├─ static\style.css        ← 全部样式(颜色、按钮、表格长什么样)</span>
 <span class="c-code">    ├─ unit_test\              ← 单元测试, 共 40 个用例, 验证每个功能是否正确</span>
-<span class="c-code">    ├─ smoke_test.py           ← 端到端测试, 模拟真实用户走一遍完整流程(34 项断言)</span>
+<span class="c-code">    ├─ smoke_test.py           ← 端到端测试, 模拟真实用户走一遍完整流程(36 项断言)</span>
 <span class="c-code">    ├─ requirements.txt        ← 依赖清单, 标明项目需要哪些第三方库</span>
 <span class="c-meta">    └─ library.db              ← 数据库文件, 存所有图书和账号数据(删掉可自动重建)</span></div>
 
@@ -304,7 +304,7 @@ details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
       <li><span class="name">02-系统设计</span><span class="about">整体架构、模块划分、关键业务流程（借还流程、权限设计）</span></li>
       <li><span class="name">03-数据库设计</span><span class="about">3 张表的结构、字段含义、外键与索引、E-R 关系</span></li>
       <li><span class="name">04-接口设计</span><span class="about">全部 15 个路由清单：路径、方法、权限、入参出参</span></li>
-      <li><span class="name">05-测试报告</span><span class="about">测试范围、74 项测试用例及结果、如何复现</span></li>
+      <li><span class="name">05-测试报告</span><span class="about">测试范围、76 项测试用例及结果、如何复现</span></li>
       <li><span class="name">06-使用说明书</span><span class="about">面向使用者：安装步骤、每个功能怎么操作</span></li>
     </ul>
 
@@ -367,7 +367,7 @@ details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
         在项目目录下打开命令行，先进入源码目录再执行：<br><br>
         <code>cd 03-项目源码</code><br><br>
         <code>python -m unittest discover -s unit_test -t .</code> &nbsp;→&nbsp; 40 个单元测试<br>
-        <code>python smoke_test.py</code> &nbsp;→&nbsp; 34 项端到端验证（需先启动服务）<br><br>
+        <code>python smoke_test.py</code> &nbsp;→&nbsp; 36 项端到端验证（需先启动服务）<br><br>
         测试使用独立的临时数据库，<b>不会影响你的业务数据</b>。
       </div>
     </details>
