@@ -1,1 +1,7 @@
-flask>=2.0
+# 依赖清单: 项目仅依赖 Flask, SQLite 由 Python 标准库 sqlite3 提供, 无需额外安装
+# 安装: pip install -r requirements.txt
+#
+# 版本范围说明:
+#   下限 3.0  本项目在 Flask 3.1.3 上开发并验证通过
+#   上限 4.0  不自动跨大版本升级, 避免出现未验证的兼容性问题
+Flask>=3.0,<4.0

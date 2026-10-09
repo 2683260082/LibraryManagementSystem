@@ -1,0 +1,12 @@
+# 批处理文件必须使用 CRLF 行尾。
+# cmd.exe 解析批处理按行读取, 若为 LF 行尾会出现行偏移错位,
+# 导致标签跳转失败、命令碎片化(如 'stall_failed' is not recognized)。
+# 此规则保证无论作者用什么编辑器提交, clone 后都还原成 CRLF。
+*.bat text eol=crlf
+
+# 其余文本文件跟随 core.autocrlf 设置, 不额外强制转换
+*.py text
+*.md text
+*.html text
+*.css text
+*.txt text
