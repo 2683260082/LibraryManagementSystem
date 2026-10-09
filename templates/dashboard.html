@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}控制台 - 图书管理系统{% endblock %}
+{% block content %}
+<h2 class="page-title">控制台</h2>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="stat-num">{{ stats.book_kinds }}</div><div class="stat-label">图书种类</div></div>
+  <div class="stat-card"><div class="stat-num">{{ stats.book_total }}</div><div class="stat-label">馆藏总量</div></div>
+  <div class="stat-card"><div class="stat-num">{{ stats.borrowing }}</div><div class="stat-label">当前借出</div></div>
+  {% if stats.readers is defined %}
+  <div class="stat-card"><div class="stat-num">{{ stats.readers }}</div><div class="stat-label">注册读者</div></div>
+  {% endif %}
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>{% if role == 'admin' %}最新借阅动态{% else %}我的最近借阅{% endif %}</h3>
+    <a class="btn btn-sm" href="{{ url_for('books') }}">去借书 →</a>
+  </div>
+  {% if recent %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>书名</th>
+        {% if role == 'admin' %}<th>读者</th>{% endif %}
+        <th>借阅日期</th>
+        {% if role != 'admin' %}<th>应还日期</th><th>状态</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td>{{ r.title }}</td>
+        {% if role == 'admin' %}<td>{{ r.name | dash }}</td>{% endif %}
+        <td>{{ r.borrow_date }}</td>
+        {% if role != 'admin' %}
+        <td>{{ r.due_date }}</td>
+        <td>
+          {# overdue 由后端 SQL 计算, 不在模板里做字符串日期比较 #}
+          {% if r.return_date %}<span class="tag tag-ok">已还</span>
+          {% elif r.overdue %}<span class="tag tag-danger">逾期</span>
+          {% else %}<span class="tag tag-info">借阅中</span>{% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">暂无借阅记录</p>
+  {% endif %}
+</div>
+{% endblock %}

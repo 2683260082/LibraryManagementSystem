@@ -1,0 +1,12 @@
+{# 通用分页控件, 通过 url_for 生成链接并自动保留当前查询条件 #}
+{% if pager.pages > 1 %}
+<div class="pager">
+  {% if pager.has_prev %}
+  <a class="btn btn-sm" href="{{ url_for(request.endpoint, page=pager.page - 1, kw=kw|default('', true), category=category|default('', true), status=status|default('', true)) }}">上一页</a>
+  {% endif %}
+  <span class="pager-info">第 {{ pager.page }} / {{ pager.pages }} 页 · 共 {{ pager.total }} 条</span>
+  {% if pager.has_next %}
+  <a class="btn btn-sm" href="{{ url_for(request.endpoint, page=pager.page + 1, kw=kw|default('', true), category=category|default('', true), status=status|default('', true)) }}">下一页</a>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}读者管理 - 图书管理系统{% endblock %}
+{% block content %}
+<h2 class="page-title">读者管理</h2>
+<div class="panel">
+  {% if readers %}
+  <table class="table">
+    <thead>
+      <tr><th>ID</th><th>用户名</th><th>姓名</th><th>手机号</th><th>注册时间</th><th>当前借阅</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      {% for r in readers %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td class="mono">{{ r.username }}</td>
+        <td>{{ r.name | dash }}</td>
+        <td>{{ r.phone | dash }}</td>
+        <td>{{ r.created_at | dash }}</td>
+        <td>
+          <span class="tag {{ 'tag-danger' if r.borrowing else 'tag-ok' }}">{{ r.borrowing }} 本</span>
+        </td>
+        <td>
+          {# 用 tojson 安全地把姓名传给 JS, 避免直接插入 JS 字符串导致的 XSS #}
+          <form method="post" action="{{ url_for('reader_delete', user_id=r.id) }}"
+                onsubmit="return confirm({{ ('确定注销读者 ' ~ (r.name or r.username) ~ '？历史借阅记录将保留。') | tojson }})">
+            <button class="btn btn-sm btn-danger" {% if r.borrowing %}disabled title="有未还图书，无法注销"{% endif %}>注销</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "_pager.html" %}
+  {% else %}
+  <p class="empty">暂无注册读者</p>
+  {% endif %}
+</div>
+{% endblock %}

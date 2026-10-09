@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}图书管理系统{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if session.get('user_id') %}
+<header class="topbar">
+  <div class="brand">📚 图书管理系统</div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}">首页</a>
+    <a href="{{ url_for('books') }}">图书检索</a>
+    <a href="{{ url_for('my_borrows') }}">我的借阅</a>
+    {% if role == 'admin' %}
+      <a href="{{ url_for('readers') }}">读者管理</a>
+      <a href="{{ url_for('all_borrows') }}">借阅记录</a>
+    {% endif %}
+  </nav>
+  <div class="userbox">
+    <span>{{ current_user }}{% if role == 'admin' %}（管理员）{% endif %}</span>
+    <a class="btn btn-sm btn-ghost" href="{{ url_for('logout') }}">退出</a>
+  </div>
+</header>
+{% endif %}
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash flash-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">图书管理系统 © 2026 · Flask + SQLite</footer>
+</body>
+</html>

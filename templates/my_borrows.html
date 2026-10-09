@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}我的借阅 - 图书管理系统{% endblock %}
+{% block content %}
+<h2 class="page-title">我的借阅</h2>
+<div class="panel">
+  {% if rows %}
+  <table class="table">
+    <thead>
+      <tr><th>书名</th><th>作者</th><th>借阅日期</th><th>应还日期</th><th>归还日期</th><th>逾期费</th><th>状态</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr class="{% if r.overdue %}row-warn{% endif %}">
+        <td><b>{{ r.title }}</b></td>
+        <td>{{ r.author | dash }}</td>
+        <td>{{ r.borrow_date }}</td>
+        <td>{{ r.due_date }}</td>
+        <td>{{ r.return_date | dash }}</td>
+        <td>
+          {# 未还时显示"应计", 已还时显示实收金额 #}
+          {% if not r.return_date and r.overdue %}
+            <span class="text-danger">{{ r.accrued | money }}（应计）</span>
+          {% else %}
+            {{ r.fine | money }}
+          {% endif %}
+        </td>
+        <td>
+          {% if r.return_date %}<span class="tag tag-ok">已归还</span>
+          {% elif r.overdue %}<span class="tag tag-danger">已逾期</span>
+          {% else %}<span class="tag tag-info">借阅中</span>{% endif %}
+        </td>
+        <td>
+          {% if not r.return_date %}
+          {# 用 tojson 安全地把书名传给 JS, 避免直接插入 JS 字符串导致的 XSS #}
+          <form method="post" action="{{ url_for('return_book', borrow_id=r.id) }}"
+                onsubmit="return confirm({{ ('确认归还《' ~ r.title ~ '》？') | tojson }})">
+            <button class="btn btn-sm btn-primary">归还</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "_pager.html" %}
+  {% else %}
+  <p class="empty">你还没有借过书，去 <a href="{{ url_for('books') }}">图书检索</a> 看看吧</p>
+  {% endif %}
+</div>
+{% endblock %}

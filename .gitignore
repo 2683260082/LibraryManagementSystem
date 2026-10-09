@@ -1,0 +1,26 @@
+# Python 缓存
+__pycache__/
+*.py[cod]
+*.pyo
+
+# 数据库(首次启动自动生成, 不需纳入版本管理)
+library.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# 运行日志(启动服务时自动产生)
+server.log
+server.err
+*.log
+*.err
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 浏览器自动化调试产物
+.playwright-cli/
+output/

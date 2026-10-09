@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}借阅记录 - 图书管理系统{% endblock %}
+{% block content %}
+<h2 class="page-title">全部借阅记录</h2>
+
+<form class="search-bar" method="get">
+  <input type="text" name="kw" value="{{ kw }}" placeholder="按书名 / 读者姓名搜索">
+  <select name="status">
+    <option value="">全部状态</option>
+    <option value="on" {% if status == 'on' %}selected{% endif %}>仅看在借</option>
+    <option value="overdue" {% if status == 'overdue' %}selected{% endif %}>仅看逾期</option>
+  </select>
+  <button class="btn btn-primary" type="submit">筛选</button>
+  <a class="btn btn-ghost" href="{{ url_for('all_borrows') }}">重置</a>
+</form>
+
+<div class="panel">
+  {% if rows %}
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>读者</th><th>书名</th><th>借阅日期</th><th>应还日期</th><th>归还日期</th><th>逾期费</th><th>状态</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr class="{% if not r.return_date and r.due_date < today %}row-warn{% endif %}">
+        <td>{{ r.id }}</td>
+        <td>{{ r.reader_name | dash }}</td>
+        <td><b>{{ r.title }}</b></td>
+        <td>{{ r.borrow_date }}</td>
+        <td>{{ r.due_date }}</td>
+        <td>{{ r.return_date | dash }}</td>
+        <td>{{ r.fine | money }}</td>
+        <td>
+          {% if r.return_date %}<span class="tag tag-ok">已归还</span>
+          {% elif r.due_date < today %}<span class="tag tag-danger">已逾期</span>
+          {% else %}<span class="tag tag-info">借阅中</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "_pager.html" %}
+  {% else %}
+  <p class="empty">暂无符合条件的借阅记录</p>
+  {% endif %}
+</div>
+{% endblock %}

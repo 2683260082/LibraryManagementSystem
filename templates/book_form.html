@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set editing = book is not none %}
+{% block title %}{{ '编辑图书' if editing else '新增图书' }} - 图书管理系统{% endblock %}
+{% block content %}
+<h2 class="page-title">{{ '编辑图书' if editing else '新增图书' }}</h2>
+<div class="panel form-panel">
+  {#
+    提交失败时用 form 字典回显用户已填内容, 避免重新录入。
+    book_form 中携带 request.form, 未提交时为空字典, 取值自动回退到空串。
+  #}
+  <form method="post" class="form-grid">
+    <label>ISBN
+      <input type="text" name="isbn" maxlength="20"
+             value="{{ book.isbn if editing else form.get('isbn', '') }}" placeholder="如 9787111213826">
+    </label>
+    <label>书名 *
+      <input type="text" name="title" maxlength="100" required
+             value="{{ book.title if editing else form.get('title', '') }}">
+    </label>
+    <label>作者
+      <input type="text" name="author" maxlength="100"
+             value="{{ book.author if editing else form.get('author', '') }}">
+    </label>
+    <label>出版社
+      <input type="text" name="publisher" maxlength="100"
+             value="{{ book.publisher if editing else form.get('publisher', '') }}">
+    </label>
+    <label>分类
+      <input type="text" name="category" maxlength="100"
+             value="{{ book.category if editing else form.get('category', '') }}" placeholder="如 计算机 / 文学">
+    </label>
+    <label>价格（元）
+      <input type="number" step="0.01" min="0" name="price"
+             value="{{ book.price if editing else form.get('price', '0') }}">
+    </label>
+    <label>馆藏总数 *
+      <input type="number" min="1" max="100000" name="total" required
+             value="{{ book.total if editing else form.get('total', '1') }}">
+    </label>
+    <p class="form-tip">可借册数由系统根据实际借阅情况自动计算，无需手工填写。</p>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">保 存</button>
+      <a class="btn btn-ghost" href="{{ url_for('books') }}">返回</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

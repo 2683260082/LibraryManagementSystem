@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}注册 - 图书管理系统{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <h1>读者注册</h1>
+  <p class="sub">注册后即可借阅图书</p>
+  <form method="post">
+    <label>用户名
+      <input type="text" name="username" required placeholder="用于登录">
+    </label>
+    <label>姓名
+      <input type="text" name="name" required placeholder="真实姓名">
+    </label>
+    <label>手机号
+      <input type="text" name="phone" placeholder="选填">
+    </label>
+    <label>密码（至少 6 位）
+      <input type="password" name="password" required minlength="6">
+    </label>
+    <button class="btn btn-primary btn-block" type="submit">注 册</button>
+  </form>
+  <p class="auth-link">已有账号？<a href="{{ url_for('login') }}">去登录</a></p>
+</div>
+{% endblock %}
