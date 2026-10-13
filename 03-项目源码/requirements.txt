@@ -1,4 +1,4 @@
-# 依赖清单: 项目仅依赖 Flask, SQLite 由 Python 标准库 sqlite3 提供, 无需额外安装
+﻿# 依赖清单: 项目仅依赖 Flask, SQLite 由 Python 标准库 sqlite3 提供, 无需额外安装
 # 安装: pip install -r requirements.txt
 #
 # 版本范围说明:

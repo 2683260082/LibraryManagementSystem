@@ -215,7 +215,7 @@ details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
       <div class="step">
         <div class="body">
           <b>安装 Python（已经装过就跳过这步）</b>
-          <span>到 <span class="url">python.org/downloads</span> 下载，安装时<b>务必勾选 <span class="kbd">Add Python to PATH</span></b>，否则启动会报"不是内部或外部命令"。</span>
+          <span>双击本文件夹里的 <span class="kbd">04-安装包\python-3.11.9-amd64.exe</span> 安装（或到 <span class="url">python.org/downloads</span> 下载），安装时<b>务必勾选 <span class="kbd">Add Python to PATH</span></b>，否则启动会报"不是内部或外部命令"。</span>
         </div>
       </div>
       <div class="step">
@@ -278,6 +278,9 @@ details .answer { margin-top: 10px; font-size: 14px; color: #334155; }
 <span class="c-code">    ├─ smoke_test.py           ← 端到端测试, 模拟真实用户走一遍完整流程(36 项断言)</span>
 <span class="c-code">    ├─ requirements.txt        ← 依赖清单, 标明项目需要哪些第三方库</span>
 <span class="c-meta">    └─ library.db              ← 数据库文件, 存所有图书和账号数据(删掉可自动重建)</span></div>
+<span class="c-code">04-安装包\                      ← 没 Python/没网也能装</span>
+<span class="c-code">    ├─ python-3.11.9-amd64.exe  ← 没装 Python 就先双击它(勾选 Add to PATH)</span>
+<span class="c-code">    └─ wheels\                  ← 依赖离线包, 双击脚本自动优先使用</span>
 
     <div class="tip">
       <b>答辩时被问"代码在哪"？</b>

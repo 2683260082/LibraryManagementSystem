@@ -67,10 +67,15 @@ rem --- 未检测到 Python ---
 echo.
 echo  [错误] 没有检测到 Python 环境。
 echo.
-echo  请先安装 Python 3.8 或更高版本:
-echo    1. 打开 https://www.python.org/downloads/ 下载
-echo    2. 安装时务必勾选 "Add Python to PATH"  ^<-- 这一步最关键
-echo    3. 安装完成后重新双击本文件
+echo  请先安装 Python, 推荐直接用本文件夹里自带的安装包:
+echo    "04-安装包\python-3.11.9-amd64.exe"  双击安装
+echo    安装时务必勾选 "Add Python to PATH"  ^<-- 这一步最关键
+echo  (也可到 https://www.python.org/downloads/ 下载)
+echo.
+if exist "%~dp004-安装包\python-3.11.9-amd64.exe" (
+    echo  正在帮你打开安装程序, 装完后重新双击本文件即可。
+    start "" "%~dp004-安装包\python-3.11.9-amd64.exe"
+)
 echo.
 pause
 goto :end
@@ -78,9 +83,13 @@ goto :end
 rem --- 未安装 Flask ---
 :no_flask
 echo  [1/3] 环境检查通过
-echo  [2/3] 未检测到依赖 Flask, 正在自动安装...
+echo  [2/3] 未检测到依赖 Flask, 正在自动安装(优先离线包)...
 echo.
-python -m pip install -r requirements.txt
+if exist "%~dp004-安装包\wheels" (
+    python -m pip install -r requirements.txt --no-index --find-links="%~dp004-安装包\wheels"
+) else (
+    python -m pip install -r requirements.txt
+)
 if errorlevel 1 goto :install_failed
 echo.
 echo  依赖安装完成, 正在启动服务...
